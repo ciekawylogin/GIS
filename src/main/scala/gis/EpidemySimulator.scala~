@@ -1,0 +1,10 @@
+package gis
+
+
+object EpidemySimulator {
+
+	
+  def main(args: Array[String]) = {
+
+  }
+}
