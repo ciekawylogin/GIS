@@ -1,4 +1,4 @@
-## Modelling epidemy with SIS model
+## Modelling epidemy using SIS model
 
 Assignment project for course "Graphs and Networks" (grafy i sieci) at the Faculty of Electronics and Information Technology, WUT. 
 
