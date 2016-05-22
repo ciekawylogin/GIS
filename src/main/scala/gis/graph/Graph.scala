@@ -31,11 +31,11 @@ case class Graph(V: Map[String, Vertex]) {
   def weightedRandomVertexName = {
     val num: Int = math.floor(Random.nextDouble() * totalDegree).toInt
     var result: Option[String] = None
-    V.keys.foldLeft(0)((acc: Int, name: String) => {
-      val vertex = getVertex(name)
-      if(acc <= num && acc + vertex.degree > num)
-        result = Some(name)
-      acc + vertex.degree
+    V.foldLeft(0)({
+      case (acc: Int, (name: String, vertex: Vertex)) =>
+        if(acc <= num && acc + vertex.degree > num)
+          result = Some(name)
+        acc + vertex.degree
     })
     result.get
   }
@@ -67,8 +67,14 @@ case class Graph(V: Map[String, Vertex]) {
     val header = "graph graphname {"
     val options = ""
     val footer = "}"
-    val nodes = V.keys.fold("")((acc: String, name: String) => {
-      val node = getVertex(name)
+    val nodes = V.foldLeft("")({
+      case (acc: String, (name: String, node: Vertex)) if node.state == State.Susceptible =>
+        acc + s""" "${name.replace(" ", "\\n")}" [fillcolor=white] \n"""
+      case (acc: String, (name: String, node: Vertex)) if node.state == State.Infected =>
+        acc + s""" "${name.replace(" ", "\\n")}" [fillcolor=gray] """
+    })
+    val edges = V.foldLeft("")({
+      case (acc: String, (name: String, node: Vertex)) =>
       acc + node.neighbors.map((neighborName: String) => {
         if (neighborName > name)
           s""" "${name.replace(" ", "\\n")}" -- "${neighborName.replace(" ", "\\n")}"\n"""
@@ -76,6 +82,6 @@ case class Graph(V: Map[String, Vertex]) {
           ""
       }).fold("")(_ + _)
     })
-    s"$header\n$options\n$nodes\n$footer"
+    s"$header\n$options\n$nodes\n$edges\n$footer"
   }
 }
