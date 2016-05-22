@@ -10,5 +10,9 @@ object EpidemySimulator {
 //      degree -> list.size
 //    }).toList.sortBy(-_._1))
     println(graph.exportDot)
+
+    println(graph.withRandomVertexInfected.exportDot)
+
+    println(graph.withRandomVertexInfected.simulationStep(1, 0).exportDot)
   }
 }
