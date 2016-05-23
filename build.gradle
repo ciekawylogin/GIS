@@ -1,0 +1,27 @@
+apply plugin: 'scala'
+apply plugin: 'application'
+
+group = 'scanye'
+mainClassName = 'gis.EpidemySimulator'
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.scala-lang:scala-library:2.11.7'
+    compile 'org.scala-lang:scala-compiler:2.11.7'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.9'
+}
+
+
+// Allow passing command line arguments to the application (using -Prunargs).
+run {
+    if (project.hasProperty('runargs')) {
+        args(runargs.split(','))
+    }
+}
