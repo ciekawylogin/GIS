@@ -20,7 +20,7 @@ case class Graph(V: Map[String, Vertex]) {
     V.get(name).get
 
   lazy val totalDegree =
-    V.values.map((v: Vertex) => v.degree()).sum
+    V.values.map((v: Vertex) => v.degree).sum
 
   lazy val isEmpty =
     V.isEmpty
@@ -43,15 +43,15 @@ case class Graph(V: Map[String, Vertex]) {
   def simulationStep(beta: Double, gamma: Double) = {
     copy(
       V = V.map({
-      case (name: String, vertex: Vertex) if vertex.state == State.Infected =>
+      case (name: String, vertex: Vertex) if vertex.isInfected =>
         if(gamma > Random.nextDouble())
           name -> vertex.susceptible
         else
           name -> vertex
-      case (name: String, vertex: Vertex) if vertex.state == State.Susceptible =>
+      case (name: String, vertex: Vertex) if vertex.isSusceptible =>
         val infectedNeighbors = vertex.neighbors.foldLeft(0)((acc: Int, neighborName: String) => {
           val neighbor = getVertex(neighborName)
-          if (neighbor.state == State.Infected)
+          if (neighbor.isInfected)
             acc + 1
           else
             acc
@@ -63,6 +63,11 @@ case class Graph(V: Map[String, Vertex]) {
     }))
   }
 
+  def countIntectedVertices =
+    V.count {
+      case (_: String, v: Vertex) => v.isInfected
+    }
+
   lazy val exportDot = {
     val header = "graph graphname {"
     val options = """
@@ -73,9 +78,9 @@ case class Graph(V: Map[String, Vertex]) {
                   """
     val footer = "}"
     val nodes = V.foldLeft("")({
-      case (acc: String, (name: String, node: Vertex)) if node.state == State.Susceptible =>
+      case (acc: String, (name: String, node: Vertex)) if node.isSusceptible =>
         acc + s""" "${name.replace(" ", "\\n")}" [fillcolor=white, style=filled ] \n"""
-      case (acc: String, (name: String, node: Vertex)) if node.state == State.Infected =>
+      case (acc: String, (name: String, node: Vertex)) if node.isInfected =>
         acc + s""" "${name.replace(" ", "\\n")}" [fillcolor=gray, style=filled ] \n"""
     })
     val edges = V.foldLeft("")({

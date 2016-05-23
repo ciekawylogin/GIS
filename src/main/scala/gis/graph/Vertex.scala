@@ -7,7 +7,7 @@ object State extends Enumeration {
 }
 
 case class Vertex(neighbors: Seq[String], state: State.Value = State.Susceptible) {
-  def degree() =
+  lazy val degree =
     neighbors.size
 
   def withNeighbor(neighbor: String) =
@@ -18,4 +18,10 @@ case class Vertex(neighbors: Seq[String], state: State.Value = State.Susceptible
 
   lazy val infected =
     copy(state = State.Infected)
+
+  lazy val isSusceptible =
+    state == State.Susceptible
+
+  lazy val isInfected =
+    state == State.Infected
 }
