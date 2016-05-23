@@ -8,7 +8,7 @@ object ScalefreeGraphGenerator {
       NameGenerator.generateName() -> Vertex(graph.V.keys.toSeq)
     ))
 
-  def generateScalefreeGraph(size: Int, initialSize: Int) =
+  def generateScalefreeGraph(size: Int, initialSize: Int, m: Int = 1) =
     List.range(initialSize, size).foldLeft(generateClique(initialSize))((graph: Graph, _: Int) => graph.withVertex(
       NameGenerator.generateName() -> Vertex(
 //        graph.V.flatMap(v => {
@@ -18,7 +18,7 @@ object ScalefreeGraphGenerator {
 //          else
 //            None
 //        }).toList
-        Seq(graph.weightedRandomVertexName)
+        List.range(0, m).map(_ => graph.weightedRandomVertexName)
       )
     ))
 }

@@ -65,13 +65,18 @@ case class Graph(V: Map[String, Vertex]) {
 
   lazy val exportDot = {
     val header = "graph graphname {"
-    val options = ""
+    val options = """
+                    rankdir=LR
+                    ratio=1.5
+                    nodesep=0.1
+                    ranksep=0.5
+                  """
     val footer = "}"
     val nodes = V.foldLeft("")({
       case (acc: String, (name: String, node: Vertex)) if node.state == State.Susceptible =>
-        acc + s""" "${name.replace(" ", "\\n")}" [fillcolor=white] \n"""
+        acc + s""" "${name.replace(" ", "\\n")}" [fillcolor=white, style=filled ] \n"""
       case (acc: String, (name: String, node: Vertex)) if node.state == State.Infected =>
-        acc + s""" "${name.replace(" ", "\\n")}" [fillcolor=gray] """
+        acc + s""" "${name.replace(" ", "\\n")}" [fillcolor=gray, style=filled ] \n"""
     })
     val edges = V.foldLeft("")({
       case (acc: String, (name: String, node: Vertex)) =>
